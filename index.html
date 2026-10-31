@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ridho Arazzak · Peta dan Data Solok Selatan</title>
+<meta name="description" content="Portofolio WebGIS, dashboard Google Earth Engine, dan simulasi 3D untuk Solok Selatan.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<style>
+:root{--ink:#eef4ec;--mu:#b6c4b4;--card:#0c1a12e6;--ln:#ffffff2e;--ac:#f2c200;--gr:#50c878;box-sizing:border-box}
+*{box-sizing:inherit}html{scroll-behavior:smooth}
+body{margin:0;background:#0a140e;color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+#map{position:fixed;inset:0;z-index:0}
+#fx{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:8px;z-index:5;border:1px solid var(--ln);background:var(--card);color:var(--ink);border-radius:20px;padding:7px 12px;font:600 12px system-ui}
+main{position:relative;z-index:2}
+section{min-height:100svh;padding:calc(env(safe-area-inset-top,0px) + 56px) 16px calc(env(safe-area-inset-bottom,0px) + 40px);display:flex;flex-direction:column;justify-content:flex-end;max-width:640px;margin:0 auto}
+#hero{justify-content:flex-end}
+h1{font:700 36px/1.1 Georgia,serif;margin:0 0 10px;text-shadow:0 2px 12px #000a}
+h2{font:700 24px/1.2 Georgia,serif;margin:0 0 6px}
+.sub{color:var(--mu);margin:0 0 14px}
+.card{background:var(--card);backdrop-filter:blur(8px);border:1px solid var(--ln);border-radius:16px;padding:14px;margin:0 0 10px}
+.card h3{margin:0 0 4px;font-size:17px}.card p{margin:0 0 10px;color:var(--mu);font-size:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-block;border-radius:10px;padding:8px 14px;font-weight:700;font-size:14px;text-decoration:none;background:var(--ac);color:#14301f}
+.btn.o{background:none;color:var(--ink);border:1px solid var(--ln)}
+.soon{font-size:12.5px;color:var(--mu)}
+.st{display:flex;gap:10px;margin:14px 0}.st div{flex:1;border-left:3px solid var(--ac);padding-left:10px}
+.st b{display:block;font:700 24px/1.1 Georgia,serif}.st span{font-size:12.5px;color:var(--mu)}
+.ee{display:grid;gap:6px}
+.ee a{display:block;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:10px 12px}
+.ee b{display:block;font-size:15px}.ee span{font-size:12.5px;color:var(--mu)}
+.flow{list-style:none;margin:0;padding:0;counter-reset:s}
+.flow li{counter-increment:s;position:relative;background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px 12px 12px 52px;margin:0 0 18px;opacity:.25;transform:translateY(14px);transition:all .6s ease;transition-delay:calc(var(--i)*.45s)}
+.flow li::before{content:counter(s);position:absolute;left:12px;top:12px;width:28px;height:28px;border-radius:50%;background:var(--ac);color:#14301f;font-weight:800;text-align:center;line-height:28px}
+.flow li:not(:last-child)::after{content:"";position:absolute;left:25px;top:100%;height:18px;border-left:2px dashed var(--ac)}
+.flow b{display:block}.flow span{font-size:13px;color:var(--mu)}
+.in .flow li{opacity:1;transform:none}
+.cv{font-size:12px;color:var(--mu);margin-top:14px}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flow li{transition:none;opacity:1;transform:none}}
+</style></head><body>
+<div id="map" aria-hidden="true"></div>
+<button id="fx" aria-pressed="false">Hentikan gerak</button>
+<main>
+<section id="hero" data-cam="hero">
+ <h1>Peta dan data satelit untuk keputusan di nagari</h1>
+ <p class="sub">Atlas, dashboard, dan simulasi 3D Solok Selatan. Semua dibuat dari data terbuka dan bisa dibuka dari HP.</p>
+ <div class="st"><div><b id="n1">–</b><span>aplikasi web</span></div><div><b id="n2">–</b><span>dashboard satelit</span></div><div><b>3D</b><span>simulasi bencana</span></div></div>
+ <div class="row"><a class="btn" href="#apps">Lihat karya</a><a class="btn o" href="#kontak">Ajak kerja sama</a></div>
+</section>
+
+<section id="apps" data-cam="apps">
+ <h2>Aplikasi peta</h2>
+ <p class="sub">Ketuk "Buka" untuk mencoba langsung.</p>
+ <div id="appList"></div>
+</section>
+
+<section id="ee" data-cam="ee">
+ <h2>Dashboard satelit</h2>
+ <p class="sub">Dibuat dengan Google Earth Engine. Setiap dashboard menjawab satu pertanyaan, misalnya "di mana risiko tambang?" atau "lahan mana layak dibangun?".</p>
+ <div class="ee" id="eeList"></div>
+</section>
+
+<section id="alur" data-cam="alur">
+ <h2>Cara kerja saya</h2>
+ <p class="sub">Dari citra satelit sampai keputusan yang bisa dipakai klien.</p>
+ <ol class="flow">
+  <li style="--i:0"><b>Data satelit dan data resmi</b><span>Citra, radar, cahaya malam, data BPS, dan titik lapangan.</span></li>
+  <li style="--i:1"><b>Analisis di Google Earth Engine</b><span>Diolah menjadi skor, luas, dan peringkat per nagari.</span></li>
+  <li style="--i:2"><b>Disajikan dalam peta</b><span>WebGIS dan dashboard dengan bahasa yang mudah dipahami.</span></li>
+  <li style="--i:3"><b>Dibuat hidup dalam 3D</b><span>Medan, banjir bandang, dan kebun kopi terlihat seperti aslinya.</span></li>
+  <li style="--i:4"><b>Keputusan di lapangan</b><span>Nagari, pemda, dan pelaku usaha tahu harus mulai dari mana.</span></li>
+ </ol>
+</section>
+
+<section id="kontak" data-cam="hero">
+ <div class="card">
+  <h2>Mari bekerja sama</h2>
+  <p>Punya wilayah atau pertanyaan yang ingin dijawab dengan peta? Ceritakan, nanti kita cari caranya.</p>
+  <div class="row"><a class="btn" id="mail" href="#">Kirim email</a></div>
+  <div class="cv">Hasil analisis adalah indikasi dari data satelit, bukan data resmi pemerintah. Perlu dicek di lapangan.</div>
+ </div>
+</section>
+</main>
+
+<script>
+/* ===== ISI DI SINI ===== */
+const EMAIL='SouthSolokSpatialDataInitiative@protonmail.com';
+const GH='https://github.com/ridhoarazzak/';
+const APPS=[
+ {t:'WebGIS Solok Selatan',d:'Sentra padi per nagari, peluang bisnis, dan simulasi galodo dalam satu aplikasi.',demo:'https://ridhoarazzak.github.io/',kode:GH+'ridhoarazzak.github.io'},
+ {t:'Simulasi Galodo 3D',d:'Perkiraan jalur banjir bandang di Solok Selatan dengan tampilan 3D.',demo:'https://ridhoarazzak.github.io/SG/',kode:''},
+ {t:'Peluang Bisnis Solok Selatan',d:'Sektor usaha yang berpotensi di tiap wilayah.',demo:'https://ridhoarazzak.github.io/Peluang-bisnis-Solok-Selatan-/',kode:''},
+ {t:'WebGIS Nagari Pasar Muara Labuh',d:'Rawan genangan, drainase prioritas, bangunan, dan tutupan lahan satu nagari, kini dengan medan 3D.',demo:'',kode:GH+'WebGIS-Nagari-Pasar-Muara-Labuh'},
+ {t:'Kopi dan pH Tanah 3D',d:'Kebun kopi dan keasaman tanah Solok Selatan dalam tampilan 3D.',demo:'https://ridhoarazzak.github.io/pH-tanah-dan-kebun-kopi/',kode:GH+'pH-tanah-dan-kebun-kopi'},
+ {t:'Jelajah Solok Selatan',d:'Mengenal rasa, budaya, dan kopi Solok Selatan dalam satu halaman.',demo:'',kode:GH+'Jelajah-Solok-Selatan-'},
+ {t:'Pojok Solsel',d:'Wisata, kuliner, penginapan, dan layanan kesehatan Solok Selatan.',demo:'',kode:''},
+ {t:'South Solok Data Initiative',d:'Pusat dashboard satelit dengan panel analisis.',demo:'https://ssdi.vercel.app/',kode:''}
+];
+const E='https://ee-mrgridhoarazzak.projects.earthengine.app/view/';
+const EE=[
+ ['Command Center Solok Selatan','Pusat data dan informasi terpadu',E+'dashboard-solok-selatan-2026'],
+ ['Pemicu Tambang','Faktor yang memicu kegiatan tambang',E+'pemicu-tambang'],
+ ['Perubahan Lahan Tambang','Pantau lahan yang berubah akibat tambang',E+'radar-mining-monitor'],
+ ['Audit Kopi (Risiko EUDR)','Risiko deforestasi dan kepatuhan EUDR',E+'eudrrisk'],
+ ['Mitigasi Bencana','Risiko dan mitigasi bencana',E+'miyigasi-bencana'],
+ ['Analisis InSAR','Pergerakan permukaan tanah dari radar',E+'insar'],
+ ['Kelayakan Pembangunan','Kesesuaian lahan untuk pembangunan',E+'kelayakan-pembangunan'],
+ ['Prioritas CSR','Prioritas program CSR per wilayah',E+'prioritas-csr'],
+ ['Bantuan Pangan','Sebaran bantuan pangan',E+'bantuanpangan'],
+ ['Data Kemiskinan','Sebaran kemiskinan wilayah','https://mrgridhoarazzak.users.earthengine.app/view/monitoringdanprediksikemiskinan20-23'],
+ ['Nagari Lubuk Gadang','Dashboard satu nagari',E+'dashboardnagarilubukgadangok'],
+ ['Karbon Lubuk Gadang Selatan','Cadangan karbon di atas tanah',E+'agblbgs'],
+ ['MRV Sako Utara','Prediksi dan verifikasi karbon',E+'mrv-prediction-sako-utara'],
+ ['SIPANTRA PSM','Pantau citra dan tata ruang',E+'dashboard-psm'],
+ ['Peta Sejarah 1941','Arsip peta lama Solok Selatan',E+'peta-sekarah-solok-selatan']
+];
+const CAM={
+ hero:{center:[101.1,-1.65],zoom:9.3,pitch:55,bearing:20},
+ apps:{center:[101.07,-1.477],zoom:13.2,pitch:62,bearing:-25},
+ ee:{center:[101.0,-1.75],zoom:9.8,pitch:58,bearing:70},
+ alur:{center:[101.2,-1.55],zoom:10.6,pitch:65,bearing:150}
+};
+/* ======================== */
+const $=i=>document.getElementById(i);
+$('n1').textContent=APPS.length;$('n2').textContent=EE.length;
+$('mail').href='mailto:'+EMAIL;
+$('appList').innerHTML=APPS.map(a=>`<div class="card"><h3>${a.t}</h3><p>${a.d}</p><div class="row">${
+ a.demo?`<a class="btn" href="${a.demo}" target="_blank" rel="noopener">Buka</a>`:''}${
+ a.kode?`<a class="btn o" href="${a.kode}" target="_blank" rel="noopener">Kode</a>`:''}${
+ !a.demo&&!a.kode?'<span class="soon">Tautan menyusul</span>':''}</div></div>`).join('');
+$('eeList').innerHTML=EE.map(e=>`<a href="${e[2]}" target="_blank" rel="noopener"><b>${e[0]}</b><span>${e[1]}</span></a>`).join('');
+
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let still=calm;
+const map=new maplibregl.Map({container:'map',center:[101,-0.5],zoom:5,pitch:0,maxPitch:75,interactive:false,attributionControl:{compact:true},
+ style:{version:8,sources:{
+  sat:{type:'raster',tiles:['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],tileSize:256,attribution:'Esri World Imagery'},
+  dem:{type:'raster-dem',tiles:['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png'],encoding:'terrarium',tileSize:256,maxzoom:14,attribution:'Elevasi: AWS Terrain Tiles'}},
+  layers:[{id:'sat',type:'raster',source:'sat',paint:{'raster-brightness-max':.8}}],
+  terrain:{source:'dem',exaggeration:1.5}}});
+function go(k,ms){
+ const c=CAM[k];if(!c)return;
+ if(still)map.jumpTo(c);else map.flyTo({...c,duration:ms||3500,curve:1.5,essential:false});
+}
+map.on('load',()=>{ if(still)go('hero');else go('hero',6500) });
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+ if(!e.isIntersecting)return;
+ e.target.classList.add('in');
+ go(e.target.dataset.cam);
+}),{threshold:.55});
+document.querySelectorAll('section').forEach(s=>io.observe(s));
+$('fx').onclick=()=>{still=!still;$('fx').setAttribute('aria-pressed',still);$('fx').textContent=still?'Nyalakan gerak':'Hentikan gerak';if(still)map.stop()};
+if(calm)$('fx').textContent='Nyalakan gerak';
+</script>
+</body></html>
