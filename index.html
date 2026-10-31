@@ -4,6 +4,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Ridho Arazzak · Peta dan Data Solok Selatan</title>
 <meta name="description" content="Portofolio WebGIS, dashboard Google Earth Engine, dan simulasi 3D untuk Solok Selatan.">
+<meta name="theme-color" content="#0a140e">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ridho Arazzak · Peta dan Data Solok Selatan">
+<meta property="og:description" content="Atlas, dashboard satelit, dan simulasi 3D Solok Selatan. Gratis dibuka dari HP.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%BA%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <style>
@@ -13,7 +18,7 @@ body{margin:0;background:#0a140e;color:var(--ink);font:16px/1.5 system-ui,-apple
 #map{position:fixed;inset:0;z-index:0}
 #fx{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:8px;z-index:5;border:1px solid var(--ln);background:var(--card);color:var(--ink);border-radius:20px;padding:7px 12px;font:600 12px system-ui}
 main{position:relative;z-index:2}
-section{min-height:100svh;padding:calc(env(safe-area-inset-top,0px) + 56px) 16px calc(env(safe-area-inset-bottom,0px) + 40px);display:flex;flex-direction:column;justify-content:flex-end;max-width:640px;margin:0 auto}
+section{min-height:100svh;padding:calc(env(safe-area-inset-top,0px) + 56px) 16px calc(env(safe-area-inset-bottom,0px) + 80px);display:flex;flex-direction:column;justify-content:flex-end;max-width:640px;margin:0 auto}
 #hero{justify-content:flex-end}
 h1{font:700 36px/1.1 Georgia,serif;margin:0 0 10px;text-shadow:0 2px 12px #000a}
 h2{font:700 24px/1.2 Georgia,serif;margin:0 0 6px}
@@ -35,18 +40,21 @@ h2{font:700 24px/1.2 Georgia,serif;margin:0 0 6px}
 .flow li:not(:last-child)::after{content:"";position:absolute;left:25px;top:100%;height:18px;border-left:2px dashed var(--ac)}
 .flow b{display:block}.flow span{font-size:13px;color:var(--mu)}
 .in .flow li{opacity:1;transform:none}
+.qr{display:block;width:100%;max-width:300px;margin:6px auto 12px;border-radius:14px;background:#fff}
+#tk{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:5;background:var(--ac);color:#14301f;border-radius:24px;padding:10px 18px;font:700 14px system-ui;text-decoration:none;box-shadow:0 2px 12px #0008}
 .cv{font-size:12px;color:var(--mu);margin-top:14px}
 :focus-visible{outline:2px solid var(--ac);outline-offset:2px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flow li{transition:none;opacity:1;transform:none}}
 </style></head><body>
 <div id="map" aria-hidden="true"></div>
+<a id="tk" href="#dukung">☕ Traktir kopi</a>
 <button id="fx" aria-pressed="false">Hentikan gerak</button>
 <main>
 <section id="hero" data-cam="hero">
  <h1>Peta dan data satelit untuk keputusan di nagari</h1>
  <p class="sub">Atlas, dashboard, dan simulasi 3D Solok Selatan. Semua dibuat dari data terbuka dan bisa dibuka dari HP.</p>
  <div class="st"><div><b id="n1">–</b><span>aplikasi web</span></div><div><b id="n2">–</b><span>dashboard satelit</span></div><div><b>3D</b><span>simulasi bencana</span></div></div>
- <div class="row"><a class="btn" href="#apps">Lihat karya</a><a class="btn o" href="#kontak">Ajak kerja sama</a></div>
+ <div class="row"><a class="btn" href="#apps">Lihat karya</a><a class="btn o" href="#kontak">Ajak kerja sama</a><button class="btn o" id="bg" type="button">Bagikan</button></div>
 </section>
 
 <section id="apps" data-cam="apps">
@@ -71,6 +79,16 @@ h2{font:700 24px/1.2 Georgia,serif;margin:0 0 6px}
   <li style="--i:3"><b>Dibuat hidup dalam 3D</b><span>Medan, banjir bandang, dan kebun kopi terlihat seperti aslinya.</span></li>
   <li style="--i:4"><b>Keputusan di lapangan</b><span>Nagari, pemda, dan pelaku usaha tahu harus mulai dari mana.</span></li>
  </ol>
+</section>
+
+<section id="dukung" data-cam="hero">
+ <div class="card">
+  <h2>Traktir kopi ☕</h2>
+  <p>Semua peta di sini bisa dibuka gratis. Kalau ada yang berguna buat Anda, traktir kopi membantu saya menyiapkan analisis baru untuk Solok Selatan dan menjaga aplikasi tetap hidup. Berapa pun nilainya sangat berarti.</p>
+  <img class="qr" src="qris.png" alt="Kode QRIS atas nama Ridho Arazzak" loading="lazy">
+  <p class="soon" style="text-align:center">Bisa dibayar dari GoPay, OVO, DANA, ShopeePay, dan m-banking mana pun.<br>Di HP: simpan gambar, lalu pilih "unggah dari galeri" di aplikasi pembayaran Anda.</p>
+  <div class="row"><a class="btn" href="qris.png" download="QRIS-Ridho-Arazzak.png">Simpan kode QRIS</a></div>
+ </div>
 </section>
 
 <section id="kontak" data-cam="hero">
@@ -147,10 +165,16 @@ map.on('load',()=>{ if(still)go('hero');else go('hero',6500) });
 const io=new IntersectionObserver(es=>es.forEach(e=>{
  if(!e.isIntersecting)return;
  e.target.classList.add('in');
+ $('tk').style.display=e.target.id==='dukung'?'none':'';
  go(e.target.dataset.cam);
 }),{threshold:.55});
 document.querySelectorAll('section').forEach(s=>io.observe(s));
+$('bg').onclick=async()=>{
+ const d={title:document.title,text:'Peta dan data satelit Solok Selatan',url:location.href};
+ try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(d.url);$('bg').textContent='Tautan disalin'}}catch(e){}
+};
 $('fx').onclick=()=>{still=!still;$('fx').setAttribute('aria-pressed',still);$('fx').textContent=still?'Nyalakan gerak':'Hentikan gerak';if(still)map.stop()};
 if(calm)$('fx').textContent='Nyalakan gerak';
 </script>
 </body></html>
+ 
